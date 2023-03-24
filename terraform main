@@ -1,0 +1,129 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Codespaces
+Marketplace
+Explore
+ 
+@Yashwanthchowdary9 
+devopsbyraham
+/
+terraform-project
+Public
+Fork your own copy of devopsbyraham/terraform-project
+Code
+Issues
+Pull requests
+2
+Actions
+Projects
+Security
+Insights
+terraform-project/main.tf
+@devopsbyraham
+devopsbyraham Update main.tf
+Latest commit 104eccf 4 days ago
+ History
+ 1 contributor
+84 lines (76 sloc)  1.79 KB
+
+#this file consists of code for instances and sg
+provider "aws" {
+region = "ap-south-1"
+access_key = "AKIARSPNELGYCJEVYJ4K"
+secret_key = "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"
+}
+
+resource "aws_instance" "one" {
+  ami             = "ami-0d81306eddc614a45"
+  instance_type   = "t2.micro"
+  key_name        = "rmk8s"
+  vpc_security_group_ids = [aws_security_group.three.id]
+  availability_zone = "ap-south-1a"
+  user_data       = <<EOF
+#!/bin/bash
+sudo -i
+yum install httpd -y
+systemctl start httpd
+chkconfig httpd on
+echo "hai all this is my app created by terraform infrastructurte by raham sir server-1" > /var/www/html/index.html
+EOF
+  tags = {
+    Name = "server-1"
+  }
+}
+
+resource "aws_instance" "two" {
+  ami             = "ami-0d81306eddc614a45"
+  instance_type   = "t2.micro"
+  key_name        = "rmk8s"
+  vpc_security_group_ids = [aws_security_group.three.id]
+  availability_zone = "ap-south-1b"
+  user_data       = <<EOF
+#!/bin/bash
+sudo -i
+yum install httpd -y
+systemctl start httpd
+chkconfig httpd on
+echo "hai all this is my website created by terraform infrastructurte by raham sir server-2" > /var/www/html/index.html
+EOF
+  tags = {
+    Name = "server-2"
+  }
+}
+
+resource "aws_security_group" "three" {
+  name = "elb-sg"
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_s3_bucket" "four" {
+  bucket = "raham0077552bucketterra"
+}
+
+resource "aws_iam_user" "five" {
+name = "rahamuser11" 
+}
+
+resource "aws_ebs_volume" "six" {
+ availability_zone = "ap-south-1b"
+  size = 40
+  tags = {
+    Name = "ebs-001"
+  }
+}
+Footer
+© 2023 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+terraform-project/main.tf at master · devopsbyraham/terraform-project
